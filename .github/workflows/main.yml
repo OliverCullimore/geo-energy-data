@@ -16,7 +16,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: olivercullimore/geo-energy-data
-          file: ./app/Dockerfile
           tags: latest
           tag_with_ref: true
 
