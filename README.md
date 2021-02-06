@@ -7,11 +7,7 @@ A simple Go application that periodically gets energy data from geotogether.com 
 
 * A geo smart meter display with a [WiFi module](https://www.geotogether.com/consumer/product/wifi-module/) installed and have set up an account in the geo Home app and linked your smart meter display to your account.
 
-> You'll need to know your geo Home app login details to use this application.
-
 * An InfluxDB database server with a bucket and access token set up to use for this application.
-
-> You'll also need to know your InfluxDB server details to use this application.
 
 ## Set Up
 > Ensure you have met the prerequisites above before continuing
