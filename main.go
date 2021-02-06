@@ -24,7 +24,9 @@ func main() {
 
 	// Load environment variables
 	err := env.Load(".env")
-	checkErr(err)
+	if err != nil {
+		log.Println(err)
+	}
 	// Get environment variables
 	liveDataFetchInterval := env.Get("LIVE_DATA_FETCH_INTERVAL", "10")
 	checkEnv(liveDataFetchInterval, "Invalid live data fetch interval")
