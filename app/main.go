@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
-	"github.com/olivercullimore/go-energy-data/worker/geotogether"
+	"github.com/olivercullimore/go-energy-data/app/geotogether"
 	"github.com/olivercullimore/go-utils/configfile"
 	"github.com/olivercullimore/go-utils/env"
 	"log"
@@ -20,7 +20,7 @@ type Config struct {
 }
 
 func main() {
-	log.Println("Starting energy-data")
+	log.Println("Starting geo Energy Data")
 
 	// Load environment variables
 	err := env.Load(".env")

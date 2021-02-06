@@ -1,4 +1,4 @@
-module github.com/olivercullimore/go-energy-data/worker
+module github.com/olivercullimore/go-energy-data/app
 
 go 1.14
 

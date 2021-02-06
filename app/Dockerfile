@@ -20,10 +20,10 @@ RUN mkdir /app
 ## Create a config directory
 RUN mkdir /config
 ## Copy the built executable into /app
-COPY --from=builder /app/main .
+COPY --from=builder /app/main /app/
 ## Set workdir
 WORKDIR /app
 ## Trigger our newly built Go program
 CMD ["/app/main"]
 ## expose necessary ports
-#EXPOSE 8080
+#EXPOSE 80

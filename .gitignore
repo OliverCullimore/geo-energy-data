@@ -1,5 +1,6 @@
 # JetBrains IDE
 .idea/*
+.run/*
 
 # Exclude config & other files
 .env
