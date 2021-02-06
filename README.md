@@ -1,5 +1,5 @@
 [![License](https://img.shields.io/github/license/OliverCullimore/geo-energy-data?style=for-the-badge)](https://github.com/OliverCullimore/geo-energy-data)
-[![Build Status](https://img.shields.io/github/workflow/status/OliverCullimore/geo-energy-data/Publish%20Docker%20image?logo=github&style=for-the-badge)](https://github.com/OliverCullimore/geo-energy-data)
+[![Build Status](https://img.shields.io/github/workflow/status/OliverCullimore/geo-energy-data/ci?logo=github&style=for-the-badge)](https://github.com/OliverCullimore/geo-energy-data)
 [![Docker Pulls](https://img.shields.io/docker/pulls/olivercullimore/geo-energy-data?logo=docker&style=for-the-badge)](https://hub.docker.com/r/olivercullimore/geo-energy-data)
 
 # geo Energy Data
