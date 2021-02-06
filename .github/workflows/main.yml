@@ -16,6 +16,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: olivercullimore/geo-energy-data
+          tags: latest
           tag_with_ref: true
 
       - name: Docker Hub Description
