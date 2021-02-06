@@ -2,7 +2,7 @@
 
 # Geo Energy Data
 
-A simple Go application that periodically gets energy data from the geotogether.com API and stores it in an InfluxDB database.
+A Go application that periodically gets energy data from the geotogether.com API and stores it in an InfluxDB database.
 
 
 ## Prerequisites
