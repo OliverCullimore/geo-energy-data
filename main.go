@@ -30,7 +30,7 @@ func main() {
 	// Get environment variables
 	liveDataFetchInterval := env.Get("LIVE_DATA_FETCH_INTERVAL", "10")
 	checkEnv(liveDataFetchInterval, "Invalid live data fetch interval")
-	periodicDataFetchInterval := env.Get("PERIODIC_DATA_FETCH_INTERVAL", "600")
+	periodicDataFetchInterval := env.Get("PERIODIC_DATA_FETCH_INTERVAL", "300")
 	checkEnv(periodicDataFetchInterval, "Invalid periodic data fetch interval")
 	configFile := env.Get("CONFIG_FILE", "/config/config.json")
 	checkEnv(configFile, "Invalid config file")
