@@ -13,16 +13,17 @@ jobs:
       - name: Push to Docker Hub
         uses: docker/build-push-action@v1
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: olivercullimore/geo-energy-data
+          file: ./app/Dockerfile
           tags: latest
           tag_with_ref: true
 
       - name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
           repository: olivercullimore/geo-energy-data
           readme-filepath: ./README.md
