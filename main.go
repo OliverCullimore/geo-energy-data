@@ -109,7 +109,7 @@ func scheduler(tick *time.Ticker, tick2 *time.Ticker, done chan bool, influxDBHo
 }
 
 func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID string, runLive, runPeriodic bool) {
-	fmt.Println("Running at ", t)
+	//fmt.Println("Running at ", t)
 
 	// Get an access token
 	accessToken, err := geotogether.GetAccessToken(geoUser, geoPass)
@@ -160,10 +160,10 @@ func getPeriodicMeterData(accessToken, geoSystemID string) []string {
 			if item.ValueAvailable {
 				totalConsumption := item.TotalConsumption
 				if item.CommodityType == "GAS_ENERGY" {
-					pData = append(pData, fmt.Sprintf("meterdata,source=periodic,unit=m3,type=%s val=%f %d", item.CommodityType, item.TotalConsumption, item.ReadingTime))
+					pData = append(pData, fmt.Sprintf("meterdata,source=periodic,unit=m3,type=%s val=%f %d", item.CommodityType, item.TotalConsumption, parseTimestamp(item.ReadingTime)))
 					totalConsumption = geotogether.ConvertToKWH(item.TotalConsumption)
 				}
-				pData = append(pData, fmt.Sprintf("meterdata,source=periodic,unit=watts,type=%s val=%f %d", item.CommodityType, totalConsumption, item.ReadingTime))
+				pData = append(pData, fmt.Sprintf("meterdata,source=periodic,unit=watts,type=%s val=%f %d", item.CommodityType, totalConsumption, parseTimestamp(item.ReadingTime)))
 			}
 		}
 	}
@@ -171,7 +171,7 @@ func getPeriodicMeterData(accessToken, geoSystemID string) []string {
 	// Add bill to date
 	if periodicData.BillToDateTimestamp > 0 && len(periodicData.BillToDateList) > 0 {
 		for _, item := range periodicData.BillToDateList {
-			pData = append(pData, fmt.Sprintf("meterdata_bill,source=periodic,type=%s,validutc=%d,startutc=%d val=%f %d", item.CommodityType, item.ValidUTC, item.StartUTC, item.BillToDate, periodicData.BillToDateTimestamp))
+			pData = append(pData, fmt.Sprintf("meterdata_bill,source=periodic,type=%s,validutc=%d,startutc=%d val=%f %d", item.CommodityType, item.ValidUTC, item.StartUTC, item.BillToDate, parseTimestamp(periodicData.BillToDateTimestamp)))
 		}
 	}
 
@@ -179,7 +179,7 @@ func getPeriodicMeterData(accessToken, geoSystemID string) []string {
 	if periodicData.ActiveTariffTimestamp > 0 && len(periodicData.ActiveTariffList) > 0 {
 		for _, item := range periodicData.ActiveTariffList {
 			if item.ValueAvailable {
-				pData = append(pData, fmt.Sprintf("meterdata_tariff,source=periodic,type=%s val=%f %d", item.CommodityType, item.ActiveTariffPrice, periodicData.ActiveTariffTimestamp))
+				pData = append(pData, fmt.Sprintf("meterdata_tariff,source=periodic,type=%s val=%f %d", item.CommodityType, item.ActiveTariffPrice, parseTimestamp(periodicData.ActiveTariffTimestamp)))
 			}
 		}
 	}
@@ -187,16 +187,16 @@ func getPeriodicMeterData(accessToken, geoSystemID string) []string {
 	// Add current electricity costs
 	if periodicData.CurrentCostsElecTimestamp > 0 && len(periodicData.CurrentCostsElec) > 0 {
 		for _, item := range periodicData.CurrentCostsElec {
-			pData = append(pData, fmt.Sprintf("meterdata_currentcosts,source=periodic,type=%s,duration=%s,subtype=cost val=%f %d", item.CommodityType, item.Duration, item.CostAmount, periodicData.CurrentCostsElecTimestamp))
-			pData = append(pData, fmt.Sprintf("meterdata_currentcosts,source=periodic,type=%s,duration=%s,subtype=energy val=%f %d", item.CommodityType, item.Duration, item.EnergyAmount, periodicData.CurrentCostsElecTimestamp))
+			pData = append(pData, fmt.Sprintf("meterdata_currentcosts,source=periodic,type=%s,duration=%s,subtype=cost val=%f %d", item.CommodityType, item.Duration, item.CostAmount, parseTimestamp(periodicData.CurrentCostsElecTimestamp)))
+			pData = append(pData, fmt.Sprintf("meterdata_currentcosts,source=periodic,type=%s,duration=%s,subtype=energy val=%f %d", item.CommodityType, item.Duration, item.EnergyAmount, parseTimestamp(periodicData.CurrentCostsElecTimestamp)))
 		}
 	}
 
 	// Add current gas costs
 	if periodicData.CurrentCostsGasTimestamp > 0 && len(periodicData.CurrentCostsGas) > 0 {
 		for _, item := range periodicData.CurrentCostsGas {
-			pData = append(pData, fmt.Sprintf("meterdata_currentcosts,source=periodic,type=%s,duration=%s,subtype=cost val=%f %d", item.CommodityType, item.Duration, item.CostAmount, periodicData.CurrentCostsGasTimestamp))
-			pData = append(pData, fmt.Sprintf("meterdata_currentcosts,source=periodic,type=%s,duration=%s,subtype=energy val=%f %d", item.CommodityType, item.Duration, item.EnergyAmount, periodicData.CurrentCostsGasTimestamp))
+			pData = append(pData, fmt.Sprintf("meterdata_currentcosts,source=periodic,type=%s,duration=%s,subtype=cost val=%f %d", item.CommodityType, item.Duration, item.CostAmount, parseTimestamp(periodicData.CurrentCostsGasTimestamp)))
+			pData = append(pData, fmt.Sprintf("meterdata_currentcosts,source=periodic,type=%s,duration=%s,subtype=energy val=%f %d", item.CommodityType, item.Duration, item.EnergyAmount, parseTimestamp(periodicData.CurrentCostsGasTimestamp)))
 		}
 	}
 
@@ -216,7 +216,7 @@ func getLiveMeterData(accessToken, geoSystemID string) []string {
 	if liveData.PowerTimestamp > 0 && len(liveData.Power) > 0 {
 		for _, item := range liveData.Power {
 			if item.ValueAvailable {
-				lData = append(lData, fmt.Sprintf("meterdata,source=live,unit=watts,type=%s val=%f %d", item.Type, item.Watts, liveData.PowerTimestamp))
+				lData = append(lData, fmt.Sprintf("meterdata,source=live,unit=watts,type=%s val=%f %d", item.Type, item.Watts, parseTimestamp(liveData.PowerTimestamp)))
 			}
 		}
 	}
@@ -240,6 +240,10 @@ func outputJSON(data interface{}, msg string) {
 	dataParsed, err := json.MarshalIndent(data, "", "  ")
 	checkErr(err)
 	log.Printf("%s: \n%s", msg, string(dataParsed))
+}
+
+func parseTimestamp(timestamp int64) time.Time {
+	return time.Unix(timestamp, 0)
 }
 
 func influxDBClient(influxDBHost, influxDBPort, influxDBToken string) influxdb2.Client {
