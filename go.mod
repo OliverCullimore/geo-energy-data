@@ -7,6 +7,6 @@ require (
 	github.com/influxdata/influxdb-client-go/v2 v2.2.2
 	github.com/influxdata/line-protocol v0.0.0-20201012155213-5f565037cbc9 // indirect
 	github.com/olivercullimore/go-utils/configfile v0.0.0-20210202174944-575562b5d86d
-	github.com/olivercullimore/go-utils/env v0.0.0-20210125201937-c759659bb622
+	github.com/olivercullimore/go-utils/env v0.0.0-20210206205206-0436a866ce48
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

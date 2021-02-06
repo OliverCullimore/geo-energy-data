@@ -48,6 +48,8 @@ github.com/olivercullimore/go-utils/configfile v0.0.0-20210202174944-575562b5d86
 github.com/olivercullimore/go-utils/configfile v0.0.0-20210202174944-575562b5d86d/go.mod h1:C9n8GzOFX3mdvO9rSpcOyiuQ3idOKQPSk9UTpzOymwk=
 github.com/olivercullimore/go-utils/env v0.0.0-20210125201937-c759659bb622 h1:FSqfwH2tm+N+MHCxHyt42CfARXzV+1Oa943u6vllPcY=
 github.com/olivercullimore/go-utils/env v0.0.0-20210125201937-c759659bb622/go.mod h1:XBdY6vHGTBU+RvCIdw9I2oIrp3Orb5u1y5VI0ecw+aM=
+github.com/olivercullimore/go-utils/env v0.0.0-20210206205206-0436a866ce48 h1:m6wZ6Dh9Sy+HGH0Xp8XhVd8bh4GVS/nQfNkwnwjgOWo=
+github.com/olivercullimore/go-utils/env v0.0.0-20210206205206-0436a866ce48/go.mod h1:XBdY6vHGTBU+RvCIdw9I2oIrp3Orb5u1y5VI0ecw+aM=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
