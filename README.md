@@ -1,3 +1,5 @@
+![Publish Docker image](https://github.com/OliverCullimore/geo-energy-data/workflows/Publish%20Docker%20image/badge.svg)
+
 # Geo Energy Data
 
 A simple Go application that periodically gets energy data from the geotogether.com API and stores it in an InfluxDB database.
