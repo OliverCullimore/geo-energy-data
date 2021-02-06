@@ -255,6 +255,15 @@ func influxDBWriteRecords(recordsList []string, client influxdb2.Client, influxD
 	// get non-blocking write client
 	writeAPI := client.WriteAPI(influxDBOrg, influxDBBucket)
 
+	// Get errors channel
+	errorsCh := writeAPI.Errors()
+	// Create go proc for reading and logging errors
+	go func() {
+		for err := range errorsCh {
+			fmt.Printf("InfluxDB write error: %s\n", err.Error())
+		}
+	}()
+
 	// write records in line protocol
 	for _, record := range recordsList {
 		writeAPI.WriteRecord(record)
