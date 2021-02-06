@@ -1,4 +1,6 @@
-![Publish Docker image](https://github.com/OliverCullimore/geo-energy-data/workflows/Publish%20Docker%20image/badge.svg)
+[![License](https://img.shields.io/github/license/OliverCullimore/geo-energy-data?style=for-the-badge)](https://github.com/OliverCullimore/geo-energy-data)
+[![Build Status](https://img.shields.io/github/workflow/status/OliverCullimore/geo-energy-data/Publish%20Docker%20image?logo=github&style=for-the-badge)](https://github.com/OliverCullimore/geo-energy-data)
+[![Docker Pulls](https://img.shields.io/docker/pulls/olivercullimore/geo-energy-data?logo=docker&style=for-the-badge)](https://hub.docker.com/r/olivercullimore/geo-energy-data)
 
 # geo Energy Data
 
@@ -13,6 +15,12 @@ A Go application that periodically gets energy data from the geotogether.com API
 
 ## Set Up
 > Ensure you have met the prerequisites above before continuing
+
+### Docker
+
+[Docker Hub](https://hub.docker.com/repository/docker/olivercullimore/geo-energy-data)
+
+### Standalone
 
 1. Rename/Copy the .env.example file to .env
 
