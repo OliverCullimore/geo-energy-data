@@ -30,15 +30,6 @@ type Endpoint struct {
 	Data []EndpointData
 }
 
-/*
-{
-	"username": "example-user-name",
-	"email": "example@gmail.com",
-	"displayName": "example-display-name",
-	"validated": true,
-	"accessToken": "example-access-token"
-}
-*/
 type AuthData struct {
 	Username    string `json:"username"`
 	Email       string `json:"email"`
@@ -87,52 +78,6 @@ func GetAccessToken(user, pass string) (string, error) {
 	return accessToken, err
 }
 
-/*
-{
-    "systemRoles": [
-        {
-            "name": "6fb578fd-5295-40aa-8188-918f90ca1a3a",
-            "systemId": "ef9272fd-2a72-4306-a96f-7d624c0fbd31",
-            "roles": [
-                "READ",
-                "WRITE"
-            ]
-        }
-    ],
-    "systemDetails": [
-        {
-            "name": "Cullimore",
-            "devices": [
-                {
-                    "deviceType": "TRIO_II_TB_GEO",
-                    "sensorType": 94,
-                    "nodeId": 0,
-                    "versionNumber": {
-                        "major": 4,
-                        "minor": 2
-                    },
-                    "pairedTimestamp": 0,
-                    "pairingCode": "AAAAAA",
-                    "upgradeRequired": false
-                },
-                {
-                    "deviceType": "WIFI_MODULE",
-                    "sensorType": 81,
-                    "nodeId": 64,
-                    "versionNumber": {
-                        "major": 2,
-                        "minor": 6
-                    },
-                    "pairedTimestamp": 0,
-                    "pairingCode": "AAAAAA",
-                    "upgradeRequired": false
-                }
-            ],
-            "systemId": "ef9272fd-2a72-4306-a96f-7d624c0fbd31"
-        }
-    ]
-}
-*/
 type DeviceDataSystemRoles struct {
 	Name     string   `json:"name"`
 	SystemID string   `json:"systemId"`
@@ -185,207 +130,6 @@ func GetDeviceData(accessToken string) (DeviceData, error) {
 
 	return deviceData, err
 }
-
-/*
-{
-    "ttl": 1800,
-    "latestUtc": 1612126162,
-    "id": "ef9272fd-2a72-4306-a96f-7d624c0fbd31",
-    "totalConsumptionList": [
-        {
-            "commodityType": "ELECTRICITY",
-            "readingTime": 1612126162,
-            "totalConsumption": 16968.136,
-            "valueAvailable": true
-        },
-        {
-            "commodityType": "GAS_ENERGY",
-            "readingTime": 1612125000,
-            "totalConsumption": 1344743.0,
-            "valueAvailable": true
-        }
-    ],
-    "totalConsumptionTimestamp": 1612126162,
-    "supplyStatusList": [
-        {
-            "commodityType": "ELECTRICITY",
-            "supplyStatus": "SUPPLYOFF"
-        },
-        {
-            "commodityType": "GAS_ENERGY",
-            "supplyStatus": "SUPPLYOFF"
-        }
-    ],
-    "supplyStatusTimestamp": 1612126162,
-    "billToDateList": [
-        {
-            "commodityType": "ELECTRICITY",
-            "billToDate": 11988.49,
-            "validUTC": 1612126162,
-            "startUTC": 946684800,
-            "duration": 0,
-            "valueAvailable": true
-        },
-        {
-            "commodityType": "GAS_ENERGY",
-            "billToDate": 4267.0,
-            "validUTC": 1612125000,
-            "startUTC": 946684800,
-            "duration": 0,
-            "valueAvailable": true
-        }
-    ],
-    "billToDateTimestamp": 1612126162,
-    "activeTariffList": [
-        {
-            "commodityType": "ELECTRICITY",
-            "valueAvailable": true,
-            "nextTariffStartTime": 0,
-            "activeTariffPrice": 10.0,
-            "nextTariffPrice": 0.0,
-            "nextPriceAvailable": false
-        },
-        {
-            "commodityType": "GAS_ENERGY",
-            "valueAvailable": true,
-            "nextTariffStartTime": 0,
-            "activeTariffPrice": 2.229,
-            "nextTariffPrice": 0.0,
-            "nextPriceAvailable": false
-        }
-    ],
-    "activeTariffTimestamp": 1612126162,
-    "currentCostsElec": [
-        {
-            "commodityType": "ELECTRICITY",
-            "duration": "DAY",
-            "period": 0,
-            "costAmount": 326.68,
-            "energyAmount": 31.669
-        },
-        {
-            "commodityType": "ELECTRICITY",
-            "duration": "WEEK",
-            "period": 0,
-            "costAmount": 2567.5,
-            "energyAmount": 249.751
-        },
-        {
-            "commodityType": "ELECTRICITY",
-            "duration": "MONTH",
-            "period": 0,
-            "costAmount": 11998.5,
-            "energyAmount": 1168.851
-        }
-    ],
-    "currentCostsElecTimestamp": 1612126162,
-    "currentCostsGas": [
-        {
-            "commodityType": "GAS_ENERGY",
-            "duration": "DAY",
-            "period": 0,
-            "costAmount": 129.0,
-            "energyAmount": 48.19
-        },
-        {
-            "commodityType": "GAS_ENERGY",
-            "duration": "WEEK",
-            "period": 0,
-            "costAmount": 678.0,
-            "energyAmount": 236.859
-        },
-        {
-            "commodityType": "GAS_ENERGY",
-            "duration": "MONTH",
-            "period": 0,
-            "costAmount": 4267.0,
-            "energyAmount": 1618.241
-        }
-    ],
-    "currentCostsGasTimestamp": 1612126162,
-    "prePayDebtList": null,
-    "prePayDebtTimestamp": 0,
-    "billingMode": [
-        {
-            "billingMode": "CREDIT",
-            "commodityType": "ELECTRICITY",
-            "valueAvailable": true
-        },
-        {
-            "billingMode": "CREDIT",
-            "commodityType": "GAS_ENERGY",
-            "valueAvailable": true
-        }
-    ],
-    "billingModeTimestamp": 1612126162,
-    "budgetRagStatusDetails": [
-        {
-            "currDay": "GREEN",
-            "yesterDay": "RED",
-            "currWeek": "GREEN",
-            "lastWeek": "GREEN",
-            "currMth": "GREEN",
-            "lastMth": "GREEN",
-            "thisYear": "GREEN",
-            "valueAvailable": true,
-            "commodityType": "ELECTRICITY"
-        },
-        {
-            "currDay": "GREEN",
-            "yesterDay": "GREEN",
-            "currWeek": "GREEN",
-            "lastWeek": "GREEN",
-            "currMth": "GREEN",
-            "lastMth": "GREEN",
-            "thisYear": "GREEN",
-            "valueAvailable": true,
-            "commodityType": "GAS_ENERGY"
-        }
-    ],
-    "budgetRagStatusDetailsTimestamp": 1612126162,
-    "budgetSettingDetails": [
-        {
-            "valueAvailable": true,
-            "energyAmount": 1200.0,
-            "costAmount": 1200.0,
-            "budgetToC": 1612099325,
-            "commodityType": "ELECTRICITY"
-        },
-        {
-            "valueAvailable": true,
-            "energyAmount": 420.0,
-            "costAmount": 420.0,
-            "budgetToC": 1612099325,
-            "commodityType": "GAS_ENERGY"
-        }
-    ],
-    "budgetSettingDetailsTimestamp": 1612126162,
-    "setPoints": {
-        "daySetPoint": {
-            "temperatureSetPoint": 190,
-            "timeOfChange": 0
-        },
-        "nightSetPoint": {
-            "temperatureSetPoint": 150,
-            "timeOfChange": 0
-        }
-    },
-    "seasonalAdjustments": [
-        {
-            "valueAvailable": true,
-            "commodityType": "ELECTRICITY",
-            "adjustment": true,
-            "timeOfChange": 1567102601
-        },
-        {
-            "valueAvailable": true,
-            "commodityType": "GAS_ENERGY",
-            "adjustment": true,
-            "timeOfChange": 1567102601
-        }
-    ]
-}
-*/
 
 type PeriodicMeterDataConsumption struct {
 	CommodityType    string  `json:"commodityType"`
@@ -513,70 +257,6 @@ func GetPeriodicMeterData(accessToken, systemID string) (PeriodicMeterData, erro
 	return periodicMeterData, err
 }
 
-/*
-{
-    "latestUtc": 1612126140,
-    "id": "ef9272fd-2a72-4306-a96f-7d624c0fbd31",
-    "power": [
-        {
-            "type": "ELECTRICITY",
-            "watts": 887,
-            "valueAvailable": true
-        },
-        {
-            "type": "GAS_ENERGY",
-            "watts": 0,
-            "valueAvailable": true
-        }
-    ],
-    "powerTimestamp": 1612126140,
-    "localTime": 1612126140,
-    "localTimeTimestamp": 1612126140,
-    "creditStatus": null,
-    "creditStatusTimestamp": 0,
-    "remainingCredit": null,
-    "remainingCreditTimestamp": 0,
-    "zigbeeStatus": {
-        "electricityClusterStatus": "CONNECTED",
-        "gasClusterStatus": "CONNECTED",
-        "hanStatus": "CONNECTED",
-        "networkRssi": -46
-    },
-    "zigbeeStatusTimestamp": 1612126140,
-    "emergencyCredit": null,
-    "emergencyCreditTimestamp": 0,
-    "systemStatus": [
-        {
-            "component": "DISPLAY",
-            "statusType": "STATUS_OK",
-            "systemErrorCode": "ERROR_CODE_NONE",
-            "systemErrorNumber": 0
-        },
-        {
-            "component": "ZIGBEE",
-            "statusType": "STATUS_OK",
-            "systemErrorCode": "ERROR_CODE_NONE",
-            "systemErrorNumber": 0
-        },
-        {
-            "component": "ELECTRICITY",
-            "statusType": "STATUS_OK",
-            "systemErrorCode": "ERROR_CODE_NONE",
-            "systemErrorNumber": 0
-        },
-        {
-            "component": "GAS",
-            "statusType": "STATUS_OK",
-            "systemErrorCode": "ERROR_CODE_NONE",
-            "systemErrorNumber": 0
-        }
-    ],
-    "systemStatusTimestamp": 1612126140,
-    "temperature": 0.0,
-    "temperatureTimestamp": 0,
-    "ttl": 120
-}
-*/
 type LiveMeterDataPower struct {
 	Type           string  `json:"type"`
 	Watts          float64 `json:"watts"`
@@ -645,8 +325,8 @@ func GetLiveMeterData(accessToken, systemID string) (LiveMeterData, error) {
 }
 
 // ConvertToKWH converts m3 to kWh
-func ConvertToKWH(m3 float64) float64 {
-	return (((m3 / 1000) * 39.5) * 1.02264) / 3.6
+func ConvertToKWH(m3 float64, calorificValue float64) float64 {
+	return (((m3 / 1000) * calorificValue) * 1.02264) / 3.6
 }
 
 // makeRequest function

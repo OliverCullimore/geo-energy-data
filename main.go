@@ -38,6 +38,8 @@ func main() {
 	checkEnv(geoUser, "Invalid geo user")
 	geoPass := env.Get("GEO_PASS", "")
 	checkEnv(geoPass, "Invalid geo pass")
+	calorificValueStr := env.Get("CALORIFIC_VALUE", "39.5")
+	checkEnv(calorificValueStr, "Invalid calorific value")
 	influxDBHost := env.Get("INFLUXDB_HOST", "")
 	checkEnv(influxDBHost, "Invalid InfluxDB Host")
 	influxDBPort := env.Get("INFLUXDB_PORT", "")
@@ -74,6 +76,10 @@ func main() {
 		checkErr(err)
 	}
 
+	// Convert calorific value to float
+	calorificValue, err := strconv.ParseFloat(calorificValueStr, 64)
+	checkErr(err)
+
 	// Convert fetch intervals to time period intervals
 	liveInterval, err := strconv.Atoi(liveDataFetchInterval)
 	checkErr(err)
@@ -84,31 +90,31 @@ func main() {
 	tick := time.NewTicker(time.Second * time.Duration(liveInterval))
 	tick2 := time.NewTicker(time.Second * time.Duration(periodicInterval))
 	done := make(chan bool)
-	go scheduler(tick, tick2, done, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, config.GeoSystemID)
+	go scheduler(tick, tick2, done, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, config.GeoSystemID, calorificValue)
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 	<-sigs
 	done <- true
 }
 
-func scheduler(tick *time.Ticker, tick2 *time.Ticker, done chan bool, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID string) {
+func scheduler(tick *time.Ticker, tick2 *time.Ticker, done chan bool, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID string, calorificValue float64) {
 	// Run once when first started
-	getMeterData(time.Now(), influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID, true, true)
+	getMeterData(time.Now(), influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID, calorificValue, true, true)
 	for {
 		select {
 		case t := <-tick.C:
 			// Run live at interval
-			getMeterData(t, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID, true, false)
+			getMeterData(t, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID, calorificValue, true, false)
 		case t2 := <-tick2.C:
 			// Run periodic at interval
-			getMeterData(t2, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID, false, true)
+			getMeterData(t2, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID, calorificValue, false, true)
 		case <-done:
 			return
 		}
 	}
 }
 
-func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID string, runLive, runPeriodic bool) {
+func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID string, calorificValue float64, runLive, runPeriodic bool) {
 	//fmt.Println("Running at ", t)
 
 	// Get an access token
@@ -128,7 +134,7 @@ func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influx
 
 	if runPeriodic {
 		// Get periodic meter data
-		pData := getPeriodicMeterData(accessToken, geoSystemID)
+		pData := getPeriodicMeterData(accessToken, geoSystemID, calorificValue)
 		if len(pData) > 0 {
 			outputJSON(pData, "Writing records")
 			data = append(data, pData...)
@@ -144,7 +150,7 @@ func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influx
 	}
 }
 
-func getPeriodicMeterData(accessToken, geoSystemID string) []string {
+func getPeriodicMeterData(accessToken, geoSystemID string, calorificValue float64) []string {
 
 	// Get periodic meter data
 	periodicData, err := geotogether.GetPeriodicMeterData(accessToken, geoSystemID)
@@ -161,7 +167,7 @@ func getPeriodicMeterData(accessToken, geoSystemID string) []string {
 				totalConsumption := item.TotalConsumption
 				if item.CommodityType == "GAS_ENERGY" {
 					pData = append(pData, fmt.Sprintf("meterdata,source=periodic,unit=m3,type=%s val=%f %d", item.CommodityType, item.TotalConsumption, item.ReadingTime))
-					totalConsumption = geotogether.ConvertToKWH(item.TotalConsumption)
+					totalConsumption = geotogether.ConvertToKWH(item.TotalConsumption, calorificValue)
 				}
 				pData = append(pData, fmt.Sprintf("meterdata,source=periodic,unit=watts,type=%s val=%f %d", item.CommodityType, totalConsumption, item.ReadingTime))
 			}
