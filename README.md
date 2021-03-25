@@ -17,9 +17,9 @@ A Go application that periodically gets energy data from the geotogether.com API
 
 > Ensure you have met the prerequisites above before continuing
 
-This application is distributed as a docker image, please ensure you have docker [set-up and configured](https://www.digitalocean.com/community/tutorial_collections/how-to-install-and-use-docker) before continuing.
-
 ### Quick start
+
+This quick start is distributed as a docker image, please ensure you have docker [set-up and configured](https://www.digitalocean.com/community/tutorial_collections/how-to-install-and-use-docker) before continuing.
 
 Run the following command after replacing the following parts with appropriate values `YOUR-GEOHOMEAPP-USER`, `YOUR-GEOHOMEAPP-PASS`, `YOUR-INFLUXDB-HOST`, `YOUR-INFLUXDB-PORT`, `YOUR-INFLUXDB-ORG`, `YOUR-INFLUXDB-BUCKET`, `YOUR-INFLUXDB-TOKEN`, please refer to the Environment variables configuration section below for further details on the values to enter.
 
