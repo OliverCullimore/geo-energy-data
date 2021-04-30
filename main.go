@@ -90,6 +90,7 @@ func main() {
 	tick := time.NewTicker(time.Second * time.Duration(liveInterval))
 	tick2 := time.NewTicker(time.Second * time.Duration(periodicInterval))
 	done := make(chan bool)
+	log.Println("Starting schedulers")
 	go scheduler(tick, tick2, done, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, config.GeoSystemID, calorificValue)
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
