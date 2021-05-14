@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Language" content="en" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
+    <meta name="theme-color" content="#fff">
+
+    <title>{{.Title}}</title>
+
+    <link rel="stylesheet" href="/static/css/main.css">
+
+</head>
+<body>
+    <div class="page">
+        <header class="navbar navbar-expand-md navbar-light d-print-none">
+            <div class="container-xl">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <h1 class="navbar-brand d-none-navbar-horizontal pe-0 pe-md-3">
+                    <a href="/" title="Energy Data">
+                        <div class="navbar-brand-image" title="Energy Data">{{ IncludeFile "/static/images/logo.svg" }}</div>
+                    </a>
+                </h1>
+            </div>
+        </header>
+        <div class="content">
+            {{template "view" .}}
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
