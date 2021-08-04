@@ -8,6 +8,7 @@ import (
 	"github.com/olivercullimore/go-utils/configfile"
 	"github.com/olivercullimore/go-utils/env"
 	"log"
+	"net/url"
 	"os"
 	"os/signal"
 	"strconv"
@@ -28,28 +29,17 @@ func main() {
 		log.Println(err)
 	}
 	// Get environment variables
-	liveDataFetchInterval := env.Get("LIVE_DATA_FETCH_INTERVAL", "10")
-	checkEnv(liveDataFetchInterval, "Invalid live data fetch interval")
-	periodicDataFetchInterval := env.Get("PERIODIC_DATA_FETCH_INTERVAL", "300")
-	checkEnv(periodicDataFetchInterval, "Invalid periodic data fetch interval")
-	configFile := env.Get("CONFIG_FILE", "/config/config.json")
-	checkEnv(configFile, "Invalid config file")
-	geoUser := env.Get("GEO_USER", "")
-	checkEnv(geoUser, "Invalid geo user")
-	geoPass := env.Get("GEO_PASS", "")
-	checkEnv(geoPass, "Invalid geo pass")
-	calorificValueStr := env.Get("CALORIFIC_VALUE", "39.5")
-	checkEnv(calorificValueStr, "Invalid calorific value")
-	influxDBHost := env.Get("INFLUXDB_HOST", "")
-	checkEnv(influxDBHost, "Invalid InfluxDB Host")
-	influxDBPort := env.Get("INFLUXDB_PORT", "")
-	checkEnv(influxDBPort, "Invalid InfluxDB Port")
-	influxDBOrg := env.Get("INFLUXDB_ORG", "")
-	checkEnv(influxDBOrg, "Invalid InfluxDB Organization")
-	influxDBBucket := env.Get("INFLUXDB_BUCKET", "")
-	checkEnv(influxDBBucket, "Invalid InfluxDB Bucket")
-	influxDBToken := env.Get("INFLUXDB_TOKEN", "")
-	checkEnv(influxDBToken, "Invalid InfluxDB Token")
+	liveDataFetchInterval := checkConfig("LIVE_DATA_FETCH_INTERVAL", "10", "live data fetch interval", "numeric")
+	periodicDataFetchInterval := checkConfig("PERIODIC_DATA_FETCH_INTERVAL", "300", "periodic data fetch interval", "numeric")
+	configFile := checkConfig("CONFIG_FILE", "/config/config.json", "config file", "")
+	geoUser := checkConfig("GEO_USER", "", "geo user", "")
+	geoPass := checkConfig("GEO_PASS", "", "geo pass", "")
+	calorificValueStr := checkConfig("CALORIFIC_VALUE", "39.5", "calorific value", "")
+	influxDBHost := checkConfig("INFLUXDB_HOST", "", "InfluxDB host", "url")
+	influxDBPort := checkConfig("INFLUXDB_PORT", "8086", "InfluxDB port", "numeric")
+	influxDBOrg := checkConfig("INFLUXDB_ORG", "", "InfluxDB organization", "")
+	influxDBBucket := checkConfig("INFLUXDB_BUCKET", "", "InfluxDB bucket", "")
+	influxDBToken := checkConfig("INFLUXDB_TOKEN", "", "InfluxDB token", "")
 
 	// Load config
 	config := Config{}
@@ -237,10 +227,33 @@ func checkErr(err error) {
 	}
 }
 
-func checkEnv(env, msg string) {
-	if env == "" {
-		log.Fatal(msg)
+func checkConfig(envKey, defaultValue, name, validationType string) string {
+	valid := true
+	//logger.Printf("n: %s c: %s e: %s d: %s", name, configValue, envValue, defaultValue)
+	checkVal := env.Get(envKey, "")
+	if checkVal == "" {
+		checkVal = defaultValue
 	}
+	switch validationType {
+	case "numeric":
+		_, err := strconv.Atoi(checkVal)
+		if err != nil {
+			valid = false
+		}
+	case "url":
+		_, err := url.ParseRequestURI(checkVal)
+		if err != nil {
+			valid = false
+		}
+	case "":
+		if checkVal == "" {
+			valid = false
+		}
+	}
+	if valid != true {
+		log.Fatalf("Invalid %s value", name)
+	}
+	return checkVal
 }
 
 func outputJSON(data interface{}, msg string) {
