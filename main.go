@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 	"github.com/olivercullimore/go-energy-data/app/geotogether"
@@ -25,8 +26,10 @@ func main() {
 
 	// Load environment variables
 	err := env.Load(".env")
-	if err != nil {
+	if err != errors.New(fmt.Sprintf("file %s not found", ".env")) {
 		log.Println(err)
+	} else {
+		log.Println("Loaded env file")
 	}
 	// Get environment variables
 	liveDataFetchInterval := checkConfig("LIVE_DATA_FETCH_INTERVAL", "10", "live data fetch interval", "numeric")
