@@ -4,14 +4,14 @@
 
 # geo Energy Data
 
-A Go application that periodically retrieves energy data from the geotogether.com API and stores it in an InfluxDB database.
+A Go application that periodically retrieves energy data from the geotogether.com API and stores it in an InfluxDB 2.0 database.
 
 
 ## Prerequisites
 
 * A geo smart meter display with a [WiFi module](https://www.geotogether.com/consumer/product/wifi-module/) installed and have set up an account in the geo Home app and linked your smart meter display to your account.
 
-* An InfluxDB database server with a bucket and access token set up to use for this application.
+* An [InfluxDB OSS 2.0](https://docs.influxdata.com/influxdb/v2.0/install/) database server with a bucket and access token set up to use for this application (other versions of InfluxDB may work, but are not tested).
 
 ## Usage
 
@@ -43,18 +43,18 @@ olivercullimore/geo-energy-data
 
 ## Environment variables configuration
 
-|            Variable            |                                               Description                                               |
-| :----------------------------: | ------------------------------------------------------------------------------------------------------- |
-| `LIVE_DATA_FETCH_INTERVAL`     | Specify the live data fetch interval to use in seconds e.g. 10                                          |
-| `PERIODIC_DATA_FETCH_INTERVAL` | Specify the periodic data fetch interval to use in seconds e.g. 30 for 30 seconds, 300 for 5 minutes    |
-| `GEO_USER`                     | Specify the geo Home app username to use                                                                |
-| `GEO_PASS`                     | Specify the geo Home app password to use                                                                |
-| `INFLUXDB_HOST`                | Specify the InfluxDB host domain/IP to use including the protocol e.g. http://192.168.1.50              |
-| `INFLUXDB_PORT`                | Specify the InfluxDB port number to use e.g. 8086                                                       |
-| `INFLUXDB_ORG`                 | Specify the InfluxDB organization to use                                                                |
-| `INFLUXDB_BUCKET`              | Specify the InfluxDB bucket to use                                                                      |
-| `INFLUXDB_TOKEN`               | Specify the InfluxDB token to use                                                                       |
-| `CONFIG_FILE`                  | Specify the config filepath to use. Leave blank to use default config filepath of `/config/config.json` |
+|            Variable            |                                               Description                                                 |
+| :----------------------------: | --------------------------------------------------------------------------------------------------------- |
+| `LIVE_DATA_FETCH_INTERVAL`     | Specify the live data fetch interval to use in seconds e.g. 10                                            |
+| `PERIODIC_DATA_FETCH_INTERVAL` | Specify the periodic data fetch interval to use in seconds e.g. 30 for 30 seconds, 300 for 5 minutes      |
+| `GEO_USER`                     | Specify the geo Home app username to use                                                                  |
+| `GEO_PASS`                     | Specify the geo Home app password to use                                                                  |
+| `INFLUXDB_HOST`                | Specify the InfluxDB host domain/IP to use including the protocol e.g. http://192.168.1.50                |
+| `INFLUXDB_PORT`                | Specify the InfluxDB port number to use e.g. 8086                                                         |
+| `INFLUXDB_ORG`                 | Specify the InfluxDB organization to use                                                                  |
+| `INFLUXDB_BUCKET`              | Specify the InfluxDB bucket to use                                                                        |
+| `INFLUXDB_TOKEN`               | Specify the InfluxDB token to use                                                                         |
+| `CONFIG_FILE`                  | Specify the config file path to use. Leave blank to use default config file path of `/config/config.json` |
 
 ## For development / running standalone
 
