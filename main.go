@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
-	"github.com/olivercullimore/go-energy-data/app/geotogether"
+	"github.com/olivercullimore/geo-energy-data-client"
 	"github.com/olivercullimore/go-utils/configfile"
 	"github.com/olivercullimore/go-utils/env"
 	"log"
@@ -63,21 +63,25 @@ func main() {
 	// Check if system ID is set
 	if config.GeoSystemID == "" {
 		// Get an access token
-		accessToken, err := geotogether.GetAccessToken(geoUser, geoPass)
+		accessToken, err := geo.GetAccessToken(geoUser, geoPass)
 		checkErr(err)
 
 		// Get device data to get the system ID
-		deviceData, err := geotogether.GetDeviceData(accessToken)
+		deviceData, err := geo.GetDeviceData(accessToken)
 		checkErr(err)
 		if debugMode {
 			log.Println(deviceData)
 		}
 
 		// Set system ID and save config
-		config.GeoSystemID = deviceData.SystemDetails[0].SystemID
-		log.Println("Saving config")
-		err = configfile.Save(configFile, &config)
-		checkErr(err)
+		if len(deviceData.SystemDetails) > 0 && deviceData.SystemDetails[0].SystemID != "" {
+			config.GeoSystemID = deviceData.SystemDetails[0].SystemID
+			log.Println("Saving config")
+			err = configfile.Save(configFile, &config)
+			checkErr(err)
+		} else {
+			log.Printf("No system ID found in: %v\n", deviceData)
+		}
 	}
 
 	// Convert calorific value to float
@@ -122,14 +126,14 @@ func scheduler(tick *time.Ticker, tick2 *time.Ticker, done chan bool, influxDBHo
 func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID string, calorificValue float64, runLive, runPeriodic, debugMode bool) {
 	if debugMode {
 		if runLive {
-			fmt.Println("Running get live data at ", t)
+			fmt.Println("Running get live data at", t)
 		} else {
-			fmt.Println("Running get periodic data at ", t)
+			fmt.Println("Running get periodic data at", t)
 		}
 	}
 
 	// Get an access token
-	accessToken, err := geotogether.GetAccessToken(geoUser, geoPass)
+	accessToken, err := geo.GetAccessToken(geoUser, geoPass)
 	checkErr(err)
 
 	var data []string
@@ -164,7 +168,7 @@ func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influx
 func getPeriodicMeterData(accessToken, geoSystemID string, calorificValue float64, debugMode bool) []string {
 
 	// Get periodic meter data
-	periodicData, err := geotogether.GetPeriodicMeterData(accessToken, geoSystemID)
+	periodicData, err := geo.GetPeriodicMeterData(accessToken, geoSystemID)
 	checkErr(err)
 	// Debug output
 	if debugMode {
@@ -180,7 +184,7 @@ func getPeriodicMeterData(accessToken, geoSystemID string, calorificValue float6
 				totalConsumption := item.TotalConsumption
 				if item.CommodityType == "GAS_ENERGY" {
 					pData = append(pData, fmt.Sprintf("meterdata,source=periodic,unit=m3,type=%s val=%f %d", item.CommodityType, item.TotalConsumption, item.ReadingTime))
-					totalConsumption = geotogether.ConvertToKWH(item.TotalConsumption, calorificValue)
+					totalConsumption = geo.ConvertToKWH(item.TotalConsumption, calorificValue)
 				}
 				pData = append(pData, fmt.Sprintf("meterdata,source=periodic,unit=watts,type=%s val=%f %d", item.CommodityType, totalConsumption, item.ReadingTime))
 			}
@@ -224,7 +228,7 @@ func getPeriodicMeterData(accessToken, geoSystemID string, calorificValue float6
 
 func getLiveMeterData(accessToken, geoSystemID string, debugMode bool) []string {
 	// Get live meter data
-	liveData, err := geotogether.GetLiveMeterData(accessToken, geoSystemID)
+	liveData, err := geo.GetLiveMeterData(accessToken, geoSystemID)
 	checkErr(err)
 	// Debug output
 	if debugMode {

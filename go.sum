@@ -42,6 +42,8 @@ github.com/mattn/go-isatty v0.0.8/go.mod h1:Iq45c/XA43vh69/j3iqttzPXn0bhXyGjM0Hd
 github.com/mattn/go-isatty v0.0.9/go.mod h1:YNRxwqDuOph6SZLI9vUUz6OYw3QyUt7WiY2yME+cCiQ=
 github.com/mattn/go-isatty v0.0.10/go.mod h1:qgIWMr58cqv1PHHyhnkY9lrL7etaEgOFcMEpPG5Rm84=
 github.com/mattn/go-isatty v0.0.12/go.mod h1:cbi8OIDigv2wuxKPP5vlRcQ1OAZbq2CE4Kysco4FUpU=
+github.com/olivercullimore/geo-energy-data-client v1.0.0 h1:tlt4sS7HIcXBjPj9+Lc1W/2Xywd0itIQxbo+5tp46ps=
+github.com/olivercullimore/geo-energy-data-client v1.0.0/go.mod h1:tv+KBRsuhR2i7eNGpLmurDRDq84ubWznbnd/84j7QiE=
 github.com/olivercullimore/go-utils/configfile v0.0.0-20210201214031-e2c8a78346db h1:nU1BNUvW3gV4otinghoTigUsiAWjIbUpZHAWbnjULos=
 github.com/olivercullimore/go-utils/configfile v0.0.0-20210201214031-e2c8a78346db/go.mod h1:C9n8GzOFX3mdvO9rSpcOyiuQ3idOKQPSk9UTpzOymwk=
 github.com/olivercullimore/go-utils/configfile v0.0.0-20210202174944-575562b5d86d h1:o63LFYYcZ1WoGo4Kjt8ILHAYOpL5GsMWafAQhwjDD34=
