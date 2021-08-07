@@ -36,7 +36,6 @@ func main() {
 	// Get environment variables
 	liveDataFetchInterval := checkConfig("LIVE_DATA_FETCH_INTERVAL", "10", "live data fetch interval", "numeric")
 	periodicDataFetchInterval := checkConfig("PERIODIC_DATA_FETCH_INTERVAL", "300", "periodic data fetch interval", "numeric")
-	configFile := checkConfig("CONFIG_FILE", "/config/config.json", "config file", "")
 	geoUser := checkConfig("GEO_USER", "", "geo user", "")
 	geoPass := checkConfig("GEO_PASS", "", "geo pass", "")
 	calorificValueStr := checkConfig("CALORIFIC_VALUE", "39.5", "calorific value", "")
@@ -45,6 +44,14 @@ func main() {
 	influxDBOrg := checkConfig("INFLUXDB_ORG", "", "InfluxDB organization", "")
 	influxDBBucket := checkConfig("INFLUXDB_BUCKET", "", "InfluxDB bucket", "")
 	influxDBToken := checkConfig("INFLUXDB_TOKEN", "", "InfluxDB token", "")
+	configFile := checkConfig("CONFIG_FILE", "/config/config.json", "config file", "")
+	debugModeStr := checkConfig("DEBUG_MODE", "false", "Debug mode", "")
+
+	// Debug mode enabled?
+	debugMode := false
+	if debugModeStr == "true" {
+		debugMode = true
+	}
 
 	// Load config
 	config := Config{}
@@ -62,7 +69,9 @@ func main() {
 		// Get device data to get the system ID
 		deviceData, err := geotogether.GetDeviceData(accessToken)
 		checkErr(err)
-		//log.Println(deviceData)
+		if debugMode {
+			log.Println(deviceData)
+		}
 
 		// Set system ID and save config
 		config.GeoSystemID = deviceData.SystemDetails[0].SystemID
@@ -86,32 +95,38 @@ func main() {
 	tick2 := time.NewTicker(time.Second * time.Duration(periodicInterval))
 	done := make(chan bool)
 	log.Println("Starting schedulers")
-	go scheduler(tick, tick2, done, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, config.GeoSystemID, calorificValue)
+	go scheduler(tick, tick2, done, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, config.GeoSystemID, calorificValue, debugMode)
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 	<-sigs
 	done <- true
 }
 
-func scheduler(tick *time.Ticker, tick2 *time.Ticker, done chan bool, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID string, calorificValue float64) {
+func scheduler(tick *time.Ticker, tick2 *time.Ticker, done chan bool, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID string, calorificValue float64, debugMode bool) {
 	// Run once when first started
-	getMeterData(time.Now(), influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID, calorificValue, true, true)
+	getMeterData(time.Now(), influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID, calorificValue, true, true, debugMode)
 	for {
 		select {
 		case t := <-tick.C:
 			// Run live at interval
-			getMeterData(t, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID, calorificValue, true, false)
+			getMeterData(t, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID, calorificValue, true, false, debugMode)
 		case t2 := <-tick2.C:
 			// Run periodic at interval
-			getMeterData(t2, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID, calorificValue, false, true)
+			getMeterData(t2, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID, calorificValue, false, true, debugMode)
 		case <-done:
 			return
 		}
 	}
 }
 
-func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID string, calorificValue float64, runLive, runPeriodic bool) {
-	//fmt.Println("Running at ", t)
+func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influxDBOrg, influxDBBucket, geoUser, geoPass, geoSystemID string, calorificValue float64, runLive, runPeriodic, debugMode bool) {
+	if debugMode {
+		if runLive {
+			fmt.Println("Running get live data at ", t)
+		} else {
+			fmt.Println("Running get periodic data at ", t)
+		}
+	}
 
 	// Get an access token
 	accessToken, err := geotogether.GetAccessToken(geoUser, geoPass)
@@ -121,7 +136,7 @@ func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influx
 
 	if runLive {
 		// Get live meter data
-		lData := getLiveMeterData(accessToken, geoSystemID)
+		lData := getLiveMeterData(accessToken, geoSystemID, debugMode)
 		if len(lData) > 0 {
 			outputJSON(lData, "Writing records")
 			data = append(data, lData...)
@@ -130,7 +145,7 @@ func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influx
 
 	if runPeriodic {
 		// Get periodic meter data
-		pData := getPeriodicMeterData(accessToken, geoSystemID, calorificValue)
+		pData := getPeriodicMeterData(accessToken, geoSystemID, calorificValue, debugMode)
 		if len(pData) > 0 {
 			outputJSON(pData, "Writing records")
 			data = append(data, pData...)
@@ -146,13 +161,15 @@ func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influx
 	}
 }
 
-func getPeriodicMeterData(accessToken, geoSystemID string, calorificValue float64) []string {
+func getPeriodicMeterData(accessToken, geoSystemID string, calorificValue float64, debugMode bool) []string {
 
 	// Get periodic meter data
 	periodicData, err := geotogether.GetPeriodicMeterData(accessToken, geoSystemID)
 	checkErr(err)
 	// Debug output
-	//outputJSON(periodicData, "Periodic meter data")
+	if debugMode {
+		outputJSON(periodicData, "Periodic meter data")
+	}
 
 	var pData []string
 
@@ -205,12 +222,14 @@ func getPeriodicMeterData(accessToken, geoSystemID string, calorificValue float6
 	return pData
 }
 
-func getLiveMeterData(accessToken, geoSystemID string) []string {
+func getLiveMeterData(accessToken, geoSystemID string, debugMode bool) []string {
 	// Get live meter data
 	liveData, err := geotogether.GetLiveMeterData(accessToken, geoSystemID)
 	checkErr(err)
 	// Debug output
-	//outputJSON(liveData, "Live meter data")
+	if debugMode {
+		outputJSON(liveData, "Live meter data")
+	}
 
 	var lData []string
 
