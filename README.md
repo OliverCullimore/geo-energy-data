@@ -39,7 +39,7 @@ docker run -d \
 -e DEBUG_MODE=false \
 --restart unless-stopped \
 -v geo_energy_data:/config \
-olivercullimore/geo-energy-data
+olivercullimore/geo-energy-data:latest
 ```
 
 ## Environment variables configuration
@@ -57,6 +57,14 @@ olivercullimore/geo-energy-data
 | `INFLUXDB_TOKEN`               | Specify the InfluxDB token to use                                                                         |
 | `CONFIG_FILE`                  | Specify the config file path to use. Leave blank to use default config file path of `/config/config.json` |
 | `DEBUG_MODE`                   | Specify if the debug mode should be enabled. Leave blank to use default value of `false`                  |
+
+## Troubleshooting
+
+|      Message       |                                       Description                                          |
+| :----------------: | ------------------------------------------------------------------------------------------ |
+| No system ID found | Please ensure you have linked your smart meter display to your account in the geo Home app |
+
+> If your issue isn't listed in the troubleshooting table above please try running the latest version of the docker image, if the issue persists please open an issue
 
 ## For development / running standalone
 

@@ -80,7 +80,11 @@ func main() {
 			err = configfile.Save(configFile, &config)
 			checkErr(err)
 		} else {
-			log.Fatalf("No system ID found in: %v\n", deviceData)
+			if debugMode {
+				log.Fatalf("No system ID found in: %v\n", deviceData)
+			} else {
+				log.Fatalf("No system ID found\n")
+			}
 		}
 	}
 
