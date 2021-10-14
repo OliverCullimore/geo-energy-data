@@ -1,9 +1,10 @@
-module github.com/olivercullimore/go-energy-data
+module github.com/olivercullimore/geo-energy-data
 
 go 1.14
 
 require (
 	github.com/deepmap/oapi-codegen v1.5.0 // indirect
+	github.com/gorilla/mux v1.8.0
 	github.com/influxdata/influxdb-client-go/v2 v2.2.2
 	github.com/influxdata/line-protocol v0.0.0-20201012155213-5f565037cbc9 // indirect
 	github.com/olivercullimore/geo-energy-data-client v1.0.0
