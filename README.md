@@ -124,8 +124,9 @@ olivercullimore/geo-energy-data:v2.0.0
 |      Message       |                                       Description                                          |
 | :----------------: | ------------------------------------------------------------------------------------------ |
 | No system ID found | Please ensure you have linked your smart meter display to your account in the geo Home app |
+| Unable to login    | Please check your login details are correct                                                |
 
-> If your issue isn't listed in the troubleshooting table above please try running the latest version of the docker image, if the issue persists please open an issue
+> If your issue isn't listed in the troubleshooting table above please try running the latest version of the docker image, if the issue persists, please open an issue and provide the container's logs with the debug mode enabled
 
 ## API details
 

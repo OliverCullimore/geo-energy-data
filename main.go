@@ -5,6 +5,10 @@ import (
 	"github.com/olivercullimore/geo-energy-data/server"
 )
 
+var (
+	BuildVersion = ""
+)
+
 func main() {
 	// Run server
 	fmt.Println("                ___                          ___       _")
@@ -12,6 +16,8 @@ func main() {
 	fmt.Println("/ _` / -_) _ \\ | _|| ' \\/ -_) '_/ _` | || | | |) / _` |  _/ _` |")
 	fmt.Println("\\__, \\___\\___/ |___|_||_\\___|_| \\__, |\\_, | |___/\\__,_|\\__\\__,_|")
 	fmt.Println("|___/                           |___/ |__/")
+	fmt.Println("")
+	fmt.Println(BuildVersion)
 	fmt.Println("----------------------------------------------------------------")
 	server.Run()
 }

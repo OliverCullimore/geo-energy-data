@@ -95,14 +95,14 @@ func Run() {
 	if config.GeoSystemID == "" && geoUser != "" && geoPass != "" {
 		// Get an access token
 		accessToken, err := geo.GetAccessToken(geoUser, geoPass)
-		checkErr(err, logger)
+		checkErr(err, debugMode, logger)
 		if accessToken == "" {
 			logger.Fatalf("Unable to retrieve an access token. Please check your login details are correct\n")
 		}
 
 		// Get device data to get the system ID
 		deviceData, err := geo.GetDeviceData(accessToken)
-		checkErr(err, logger)
+		checkErr(err, debugMode, logger)
 		if debugMode {
 			logger.Println(deviceData)
 		}
@@ -112,7 +112,7 @@ func Run() {
 			config.GeoSystemID = deviceData.SystemDetails[0].SystemID
 			logger.Println("Saving config")
 			err = configfile.Save(configFile, &config)
-			checkErr(err, logger)
+			checkErr(err, debugMode, logger)
 		} else {
 			if debugMode {
 				logger.Fatalf("No system ID found in: %v\n", deviceData)
@@ -123,7 +123,7 @@ func Run() {
 	} else {
 		// Check login details are still valid
 		authData, err := geo.Login(geoUser, geoPass)
-		checkErr(err, logger)
+		checkErr(err, debugMode, logger)
 		if authData.AccessToken == "" {
 			logger.Fatalf("Unable to retrieve an access token. Please check your login details are correct\n")
 		}
@@ -131,18 +131,18 @@ func Run() {
 
 	// Convert fetch intervals to time period intervals
 	liveInterval, err := strconv.Atoi(liveDataFetchInterval)
-	checkErr(err, logger)
+	checkErr(err, debugMode, logger)
 	periodicInterval, err := strconv.Atoi(periodicDataFetchInterval)
-	checkErr(err, logger)
+	checkErr(err, debugMode, logger)
 
 	// Convert calorific value to float and save config
 	calorificValue, err := strconv.ParseFloat(calorificValueStr, 64)
-	checkErr(err, logger)
+	checkErr(err, debugMode, logger)
 	if calorificValue != config.CalorificValue {
 		config.CalorificValue = calorificValue
 		logger.Println("Saving config")
 		err = configfile.Save(configFile, &config)
-		checkErr(err, logger)
+		checkErr(err, debugMode, logger)
 	}
 
 	// Initialise env
@@ -221,13 +221,13 @@ func Run() {
 	}
 }
 
-func checkErr(err error, logger *log.Logger) {
+func checkErr(err error, debugMode bool, logger *log.Logger) {
 	if err != nil {
 		_, file, line, ok := runtime.Caller(1)
 		_, file2, line2, ok2 := runtime.Caller(2)
-		if ok && ok2 {
+		if ok && ok2 && debugMode {
 			logger.Fatalf("%s:%d -> %s:%d: %s\n", file2, line2, file, line, err.Error())
-		} else if ok {
+		} else if ok && debugMode {
 			logger.Fatalf("%s:%d: %s\n", file, line, err.Error())
 		} else {
 			logger.Fatal(err)
@@ -264,9 +264,9 @@ func checkConfig(envKey, defaultValue, name, validationType string, logger *log.
 	return checkVal
 }
 
-func outputJSON(data interface{}, msg string, logger *log.Logger) {
+func outputJSON(data interface{}, msg string, debugMode bool, logger *log.Logger) {
 	dataParsed, err := json.MarshalIndent(data, "", "  ")
-	checkErr(err, logger)
+	checkErr(err, debugMode, logger)
 	logger.Printf("%s: \n%s", msg, string(dataParsed))
 }
 
@@ -299,7 +299,7 @@ func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influx
 
 	// Get an access token
 	accessToken, err := geo.GetAccessToken(geoUser, geoPass)
-	checkErr(err, logger)
+	checkErr(err, debugMode, logger)
 
 	var data []string
 
@@ -309,7 +309,7 @@ func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influx
 		if len(lData) > 0 {
 			// Debug output
 			if debugMode {
-				outputJSON(lData, "Writing records", logger)
+				outputJSON(lData, "Writing records", debugMode, logger)
 			}
 			data = append(data, lData...)
 		}
@@ -321,7 +321,7 @@ func getMeterData(t time.Time, influxDBHost, influxDBPort, influxDBToken, influx
 		if len(pData) > 0 {
 			// Debug output
 			if debugMode {
-				outputJSON(pData, "Writing records", logger)
+				outputJSON(pData, "Writing records", debugMode, logger)
 			}
 			data = append(data, pData...)
 		}
@@ -340,10 +340,10 @@ func getPeriodicMeterData(accessToken, geoSystemID string, calorificValue float6
 
 	// Get periodic meter data
 	periodicData, err := geo.GetPeriodicMeterData(accessToken, geoSystemID)
-	checkErr(err, logger)
+	checkErr(err, debugMode, logger)
 	// Debug output
 	if debugMode {
-		outputJSON(periodicData, "Periodic meter data", logger)
+		outputJSON(periodicData, "Periodic meter data", debugMode, logger)
 	}
 
 	var pData []string
@@ -400,10 +400,10 @@ func getPeriodicMeterData(accessToken, geoSystemID string, calorificValue float6
 func getLiveMeterData(accessToken, geoSystemID string, debugMode bool, logger *log.Logger) []string {
 	// Get live meter data
 	liveData, err := geo.GetLiveMeterData(accessToken, geoSystemID)
-	checkErr(err, logger)
+	checkErr(err, debugMode, logger)
 	// Debug output
 	if debugMode {
-		outputJSON(liveData, "Live meter data", logger)
+		outputJSON(liveData, "Live meter data", debugMode, logger)
 	}
 
 	var lData []string

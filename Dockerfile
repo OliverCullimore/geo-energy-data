@@ -1,3 +1,5 @@
+## Define BUILD_VERSION
+ARG BUILD_VERSION
 ## Import base golang image
 FROM golang:1.14-alpine AS builder
 ## Install git for fetching the dependencies
@@ -11,7 +13,8 @@ ADD . /app
 ## Set workdir
 WORKDIR /app
 ## Build go application and specify the name of the executable
-RUN go build -o main .
+#RUN go build -o main .
+RUN go build -o main -ldflags="-X main.BuildVersion=$BUILD_VERSION" .
 
 ## Import fresh base alpine image
 FROM alpine:latest
