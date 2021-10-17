@@ -13,7 +13,7 @@ ADD . /app
 ## Set workdir
 WORKDIR /app
 ## Build go application and specify the name of the executable
-RUN  go install github.com/olivercullimore/geo-energy-data/server && go build -o main -a -ldflags="-X main.BuildVersion=$BUILD_VERSION" .
+RUN  go install github.com/olivercullimore/geo-energy-data/server && go build -o main -ldflags="-X main.BuildVersion=$BUILD_VERSION" .
 
 ## Import fresh base alpine image
 FROM alpine:latest
